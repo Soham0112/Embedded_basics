@@ -1,6 +1,6 @@
 # Embedded_basics
-These projects are simulated on wokwi simulator. All the projects are programmed using register addressing without using libraries for lcd or keypad.
-Datasheet provides the ports are addresses for the peripherals which you want to use.
+These projects are simulated on wokwi simulator. All the projects are programmed _**using register addressing without using libraries**_ for lcd or keypad.
+_**Datasheet**_ provides the ports are addresses for the peripherals which you want to use.
 
 
 1)Timer 0-60 seconds:
