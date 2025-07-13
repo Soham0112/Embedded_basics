@@ -40,4 +40,10 @@ at a given time only one of the displays are on.
 
 ->Green button is used to increment and red button is used to reset the value.
 
+4)Basic UART driver:
+------------------
+To check out the project, visit the link:https://wokwi.com/projects/435459832261743617
+
+->Basic tx and rx code is written. TX and RX are shorted to check for correct transmitting and receiving.
+
 
