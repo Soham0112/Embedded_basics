@@ -1,0 +1,68 @@
+#define LED PB11 //led used to denote different flashing for watchdog reset activatd or not
+
+#define IWDG_BASE_ADDR 0X40003000
+#define IWDG ((IWDG_TypeDef *) IWDG_BASE_ADDR)
+typedef struct 
+{
+  volatile uint32_t IWDG_KR;    //key register --> used to start , feed and enable PR and RLR 
+  volatile uint32_t IWDG_PR;    // Prescaler register --> divide the clock frequency for appropriate timeout period
+  volatile uint32_t IWDG_RLR;   // Reload register --> register to load value for timeout period 
+  volatile uint32_t IWDG_SR;    // Status register used for monitoring the other registers. Used to check if PR and RLR were written or not.
+  
+}IWDG_TypeDef;
+
+
+uint32_t i =0; // counter for FOR-LOOP
+void setup()
+{
+  IWDG_init();
+  pinMode(LED,OUTPUT);
+  digitalWrite(LED,LOW);
+}
+
+void loop()
+{
+  digitalWrite(LED,HIGH);
+  for(i = 0;i<1000000;i++);
+  digitalWrite(LED,LOW);
+  for(i = 0;i<1000000;i++);
+
+  
+  with_reset();
+  //without_reset(); //uncomment this and comment out the with_reset() to know the difference.
+}
+void IWDG_init()
+{
+  IWDG -> IWDG_KR  = 0X5555; //enabling the prescaler and relaod register
+  IWDG -> IWDG_PR  = 0x07;   //prescaler set to 111 -> 256
+  IWDG -> IWDG_RLR = 300;    // 624 denotes 5 seconds timeout using formula
+  //Reload value = ((timeout in seconds * LSI frequency )/ Prescaler value )-1 this is the formula for RLR register
+
+  IWDG -> IWDG_KR  = 0XAAAA; // put the prescaler and reload register values to watchdog
+}
+
+void IWDG_feed()
+{
+  IWDG -> IWDG_KR  = 0XAAAA; // reset the watchdog
+}
+
+void without_reset()
+{
+  while(true)
+  {
+    IWDG -> IWDG_KR = 0xCCCC; //start the watchdog // once started cannot be stopped
+  }
+}
+
+void with_reset()  //this is watchdog getting reset in the while(true) loop
+{
+  while(true)
+  {
+    IWDG -> IWDG_KR = 0xCCCC;
+    digitalWrite(LED,HIGH);
+    for(i = 0;i<400000;i++);
+    digitalWrite(LED,LOW);
+    for(i = 0;i<400000;i++);
+    IWDG -> IWDG_KR = 0XAAAA;
+  }
+}
